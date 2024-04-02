@@ -1,0 +1,174 @@
+// ASSIGNMENT 2
+
+// Problem Statement : Implement all the functions of a dictionary (ADT) using hashing. Data:  Set of (key, value) pairs, Keys are mapped to values, Keys must be comparable, Keys must be unique Standard Operations:  Insert(key, value), Find(key), Delete(key)
+
+#include<iostream>
+#include<string.h>
+using namespace std;
+#define max 11
+class dict
+{
+        string keyword, meaning;
+        string hashtble[max][2];
+        int key;
+        public:
+        dict();
+        void input();
+        void linear_probe();
+        void genkey();
+        void display();
+        void search(string);
+        void delkey(string);  
+};
+
+dict::dict()			// constructor for dictionary
+{
+        for(int i=0;i<max;i++)
+        {
+                hashtble[i][0]="xxx";
+                hashtble[i][1]="yyy";
+        }
+}
+
+void dict::input()		// taking the word and meaning from the user
+{
+                cout<<"\nENTER KEYWORD : ";
+                cin>>keyword;
+                cout<<"\nENTER MEANING : ";
+                cin>>meaning;
+                genkey();
+}
+
+void dict::genkey()			// key is calculated by the word length
+{
+        int sum=0;
+        for(int j=0;j<keyword.length();j++)
+        {
+                sum=sum+int(keyword[j]);
+        }
+        key=sum%max;
+        linear_probe();
+}
+
+void dict::linear_probe()   	// Linear probe is done to store the word and meaning into appropriate place with its key.
+{
+        int flag=0;
+        if(hashtble[key][0]=="xxx")
+        {
+                hashtble[key][0]=keyword;
+                hashtble[key][1]=meaning;
+        }
+        
+        else
+        {
+                int i=0;
+                for(int i=key+1;i<max;i++) 		// If the key is taken, the next vacant key is chosen to store the word and the meaning
+                {
+                	if(hashtble[i][0]=="xxx")
+                	{
+                		hashtble[key][0]=keyword;
+                		hashtble[key][1]=meaning;
+                		flag=1;
+                		break;
+                	}
+            
+                }
+                if(flag==0)
+                {
+                	for(int i=0;i<key-1;i++)
+                	{
+                		if(hashtble[i][0]=="xxx")
+                	{
+                		hashtble[key][0]=keyword;
+                		hashtble[key][1]=meaning;
+                		flag=1;
+                		break;
+                	}
+                	}
+                }
+        }
+}
+
+void dict::display()
+{
+	cout<<"\n-------------DISPLAYING DICTIONARY---------------\n";
+	for(int i=0;i<max;i++)
+	{
+		cout<<hashtble[i][0]<<"\t"<<hashtble[i][1]<<"\n";			// Dictionary, its words and meanings are displayed in proper format
+	}
+}
+
+void dict::search(string srch)
+{
+	for(int i=0;i<max;i++)
+	{
+		if(hashtble[i][0]==srch)
+		{
+			cout<<"\nKEYWORD EXISTS : \n";
+			cout<<hashtble[i][0]<<"\t"<<hashtble[i][1]<<"\n";
+		}
+	}
+}
+
+void dict::delkey(string dekey)
+{
+	for(int i=0;i<max;i++)						//To delete a key, the key is deleted and the data stored at that place is set to constructor value i.e. made null
+	{
+		if(hashtble[i][0]==dekey)
+		{
+			hashtble[key][0]="xxx";
+                	hashtble[key][1]="yyy";
+		}
+	}
+}
+
+int main()
+{
+	int n, ch, ans;
+	dict d;
+	string keyword;
+	do
+	{
+		cout<<"\n-----------------MENU----------------\n1. INPUT DATA\n2. DISPLAY DICTIONARY\n3. SEARCH KEYWORD\n4. DELETE KEY\n";	
+		cout<<"\nENTER CHOICE : ";
+		cin>>ch;
+		
+		switch(ch)
+		{
+			case 1 :
+				{
+					cout<<"\nENTER NO OF KEYWORDS YOU WISH TO ENTER IN THE DICTIONARY : ";
+					cin>>n;
+					for(int i=0;i<n;i++)
+					{
+						d.input();
+					}
+					break;
+				}
+			case 2 :
+				{
+					d.display();
+					break;
+				}
+			case 3 :
+				{
+					cout<<"\nENTER KEYWORD TO BE SEARCHED : ";
+					cin>>keyword;
+					d.search(keyword);
+					break;
+				}
+			case 4 :
+				{
+					cout<<"\nENTER KEYWORD TO BE DELETED : ";
+					cin>>keyword;
+					d.delkey(keyword);
+					break;
+				}
+
+		}
+	cout<<"\nDO YOU WISH TO CONTINUE ? (0/1 ): ";
+	cin>>ans;	
+	}while(ans==1);
+	
+	return 0;
+}
